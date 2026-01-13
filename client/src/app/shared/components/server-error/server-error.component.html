@@ -1,0 +1,18 @@
+<div class="container mt-5 p-4 bg-gray-100 rounded shadow-lg">
+    <h1 class="text-3xl">Erreur interne du serveur</h1>
+    @if (error) {
+        <h5 class="text-red-600">Erreur : {{error.message}}</h5>
+        <p class="font-bold mb-2">Cette erreur vient du serveur, pas d'Angular</p>
+        <p class="mb-2">Que faire ensuite ?</p>
+        <ol class="list-decimal ml-5 mb-4">
+            <li class="mb-1">Vérifiez l'onglet réseau dans les outils de développement Chrome.</li>
+            <li class="mb-1">Reproduisez l'erreur dans Postman.
+                Si la même erreur se produit, ne perdez pas de temps à dépanner le code Angular.
+            </li>
+        </ol>
+        <h5 class="text-lg font-semibold mb-2">Trace de pile</h5>
+        <mat-card class="p-4 bg-white">
+            <code class="block whitespace-pre-wrap">{{error.details}}</code>
+        </mat-card>
+    }
+</div>
