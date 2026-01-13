@@ -8,13 +8,14 @@ public class BuggyController : BaseApiController
     [HttpGet("unauthorized")]
     public IActionResult GetUnauthorized()
     {
-        return Unauthorized();
+        // return Unauthorized();
+        return BadRequest("Non autorisé");
     }
 
     [HttpGet("badRequest")]
     public IActionResult GetBadRequest()
     {
-        return BadRequest("Un erreur est survenue");
+        return BadRequest("Une erreur est survenue");
     }
     
     [HttpGet("notfound")]
@@ -32,6 +33,7 @@ public class BuggyController : BaseApiController
     [HttpPost("validationerror")]
     public IActionResult GetValidationError(CreateProductDto product)
     {
-        return Ok();
+        // return Ok();
+        return BadRequest("Une ou plusieurs erreurs de validation se sont produites");
     }
 }
