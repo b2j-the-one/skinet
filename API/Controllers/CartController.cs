@@ -30,7 +30,6 @@ public class CartController(ICartService cartService) : BaseApiController
         var result = await cartService.DeleteCartAsync(id);
 
         // if (!result) return BadRequest("Un problème est survenu lors de la suppréssion du panier");
-
         // return Ok();
         return !result ? BadRequest("Un problème est survenu lors de la suppréssion du panier") : Ok();
     }
