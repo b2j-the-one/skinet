@@ -1,0 +1,53 @@
+<div class="mx-auto max-w-4xl flex-1 space-y-6 w-full">
+    <div class="space-y-4 rounded-lg border border-gray-200 p-4 bg-white shadow-sm">
+        <p class="text-xl font-semibold">Récapitulatif de la commande</p>
+        <div class="space-y-4">
+            <div class="space-y-2">
+                <dl class="flex items-center justify-between gap-4">
+                    <dt class="font-medium text-gray-500">Sous-total</dt>
+                    <dt class="font-medium text-gray-900">
+                        {{cartService.totals()?.subtotal | currency:'EUR'}}
+                    </dt>
+                </dl>
+                <dl class="flex items-center justify-between gap-4">
+                    <dt class="font-medium text-gray-500">Remise</dt>
+                    <dt class="font-medium text-green-500">
+                        -{{cartService.totals()?.discount | currency:'EUR'}}
+                    </dt>
+                </dl>
+                <dl class="flex items-center justify-between gap-4">
+                    <dt class="font-medium text-gray-500">Frais de livraison</dt>
+                    <dt class="font-medium text-gray-900">
+                        {{cartService.totals()?.shipping | currency:'EUR'}}
+                    </dt>
+                </dl>
+            </div>
+
+            <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2">
+                <dt class="font-medium text-gray-500">Total</dt>
+                <dt class="font-medium text-gray-900">
+                    {{cartService.totals()?.total | currency:'EUR'}}
+                </dt>
+            </dl>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <button routerLink="/checkout" mat-flat-button>Commander</button>
+            <button routerLink="/shop" mat-button>Continuer vos achats</button>
+        </div>
+    </div>
+
+    <div class="space-y-4 rounded-lg border border-gray-200 bg-white shadow-sm">
+        <form class="space-y-2 flex flex-col p-2">
+            <label class="mb-2 block text-sm font-medium">
+                Avez-vous un code promo ?
+            </label>
+            <mat-form-field appearance="outline">
+                <mat-label>Code promo</mat-label>
+                <input type="text" matInput />
+            </mat-form-field>
+
+            <button mat-flat-button>Appliquer le code</button>
+        </form>
+    </div>
+</div>
