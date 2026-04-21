@@ -1,0 +1,98 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build-api",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/API/API.csproj",
+        "--configuration",
+        "Debug"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "watch-api",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/API/API.csproj"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-angular",
+      "type": "process",
+      "command": "npm",
+      "args": ["run", "build"],
+      "options": {
+        "cwd": "${workspaceFolder}/client"
+      }
+    },
+    {
+      "label": "format-project",
+      "type": "process",
+      "command": "npm",
+      "args": ["run", "format-all"],
+      "options": {
+        "cwd": "${workspaceFolder}/client"
+      }
+    },
+    {
+      "label": "build-full-prod",
+      "type": "shell",
+      "command": "npm run build && dotnet publish ${workspaceFolder}/API/API.csproj -c Release -o ${workspaceFolder}/publish",
+      "options": {
+        "cwd": "${workspaceFolder}/client"
+      }
+    }
+  ]
+}
+
+// {
+//     "version": "2.0.0",
+//     "tasks": [
+//         {
+//             "label": "build",
+//             "command": "dotnet",
+//             "type": "process",
+//             "args": [
+//                 "build",
+//                 "${workspaceFolder}/skinet.sln",
+//                 "/property:GenerateFullPaths=true",
+//                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
+//             ],
+//             "problemMatcher": "$msCompile"
+//         },
+//         {
+//             "label": "publish",
+//             "command": "dotnet",
+//             "type": "process",
+//             "args": [
+//                 "publish",
+//                 "${workspaceFolder}/skinet.sln",
+//                 "/property:GenerateFullPaths=true",
+//                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
+//             ],
+//             "problemMatcher": "$msCompile"
+//         },
+//         {
+//             "label": "watch",
+//             "command": "dotnet",
+//             "type": "process",
+//             "args": [
+//                 "watch",
+//                 "run",
+//                 "--project",
+//                 "${workspaceFolder}/skinet.sln"
+//             ],
+//             "problemMatcher": "$msCompile"
+//         }
+//     ]
+// }

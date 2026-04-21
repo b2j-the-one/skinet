@@ -1,11 +1,23 @@
 {
-  "[css]": {
-    "editor.formatOnSave": false
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.fixAll.eslint": "explicit"
   },
-  "[scss]": {
-    "editor.formatOnSave": false
+
+  "eslint.validate": ["typescript", "html"],
+
+  "js/ts.tsdk.path": "client/node_modules/typescript/lib",
+
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/bin": true,
+    "**/obj": true
   },
-  "[sass]": {
-    "editor.formatOnSave": false
-  }
+
+  "csharp.suppressDotnetInstallWarning": true,
+  "csharp.showOmnisharpLogOnError": true
 }
