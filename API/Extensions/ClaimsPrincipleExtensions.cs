@@ -16,6 +16,7 @@ public static class ClaimsPrincipleExtensions
 
         return userToReturn;
     }
+
     public static async Task<AppUser> GetUserByEmailWithAddress(this UserManager<AppUser> userManager, ClaimsPrincipal user)
     {
         var userToReturn = await userManager.Users

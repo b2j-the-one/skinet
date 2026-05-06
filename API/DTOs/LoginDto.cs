@@ -2,14 +2,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace API.DTOs;
 
-public class RegisterDto
+public class LoginDto
 {
-    [Required(ErrorMessage = "Le prénom est obligatoire")]
-    public string FirstName { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "Le nom est obligatoire")]
-    public string LastName { get; set; } = string.Empty;
-
     [Required(ErrorMessage = "L'email est obligatoire")]
     public string Email { get; set; } = string.Empty;
 

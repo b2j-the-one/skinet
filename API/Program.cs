@@ -3,6 +3,7 @@ using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
@@ -26,26 +27,64 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
     return ConnectionMultiplexer.Connect(configuration);
 });
 builder.Services.AddSingleton<ICartService, CartService>();
+
 builder.Services.AddAuthorization();
-builder.Services.AddIdentityApiEndpoints<AppUser>()
-    .AddEntityFrameworkStores<StoreContext>();
+// builder.Services.AddIdentityApiEndpoints<AppUser>()
+//     .AddRoles<IdentityRole>()
+//     .AddEntityFrameworkStores<StoreContext>();
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false;
+})
+.AddEntityFrameworkStores<StoreContext>()
+.AddDefaultTokenProviders();
+
+// Configuration du cookie d'authentification
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.None; // Obligatoire pour Angular
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS obligatoire 
+    
+    // Durée de validité du cookie
+    options.ExpireTimeSpan = TimeSpan.FromDays(7); // (7 jours)
+
+    // // Si tu veux que le cookie soit renouvelé à chaque requête
+    // options.SlidingExpiration = true;
+
+    options.LoginPath = "/api/account/login";
+    options.LogoutPath = "/api/account/logout";
+});
+
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseMiddleware<ExceptionMiddleware>();
 
-app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().AllowCredentials()
-    .WithOrigins("http://localhost:4200", "https://localhost:4200"));
+app.UseCors(policy => policy
+    .WithOrigins("http://localhost:4200", "https://localhost:4200")
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials()
+    );
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
-app.MapGroup("api").MapIdentityApi<AppUser>(); // api/login
+// /**
+// * MapIdentityApi<AppUser>() appartient au mode Identity API Endpoints (JWT, REST),
+// * alors qu'on utilise maintenant Identity classique + cookies + AccountController
+// **/
+// app.MapGroup("api").MapIdentityApi<AppUser>(); // api/login
 
 try 
 {
     using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<StoreContext>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
     await context.Database.MigrateAsync();
     await StoreContextSeed.SeedAsync(context);
 }

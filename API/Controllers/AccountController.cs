@@ -35,6 +35,29 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
         return Ok();
     }
 
+    [HttpPost("login")]
+    public async Task<ActionResult> Login(LoginDto loginDto)
+    {
+        // Vérifier si l'utilisateur existe
+        var user = await signInManager.UserManager.FindByEmailAsync(loginDto.Email);
+        if (user == null)
+            return Unauthorized("Identifiants invalides");
+
+        // Vérifier le mot de passe et créer le cookie
+        var result = await signInManager.PasswordSignInAsync(
+            user,
+            loginDto.Password,
+            isPersistent: true,          // cookie persistant
+            lockoutOnFailure: false
+        );
+
+        if (!result.Succeeded)
+            return Unauthorized("Identifiants invalides");
+
+        // Retourner les infos utiles (sans token, car cookie déjà créé) => appel de GetUserInfo() côté front
+        return Ok();
+    }
+
     [Authorize]
     [HttpPost("logout")]
     public async Task<ActionResult> Logout()
@@ -61,10 +84,13 @@ public class AccountController(SignInManager<AppUser> signInManager) : BaseApiCo
         });
     }
 
-    [HttpGet]
+    [HttpGet("auth-status")]
     public ActionResult GetUserState()
     {
-        return Ok(new { IsAuthenticated = User.Identity?.IsAuthenticated ?? false });
+        return Ok(new 
+        { 
+            IsAuthenticated = User.Identity?.IsAuthenticated ?? false
+        });
     }
 
     [Authorize]

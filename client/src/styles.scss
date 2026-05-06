@@ -2,13 +2,17 @@
 
 // Customize the entire app. Change :root to your selector if you want to scope the styles.
 :root {
-  @include mat.button-overrides((
-    filled-container-shape: '6px',
-    outlined-container-shape: '6px'
-  ));
-  @include mat.badge-overrides((
-    background-color: blue
-  ));
+  @include mat.button-overrides(
+    (
+      filled-container-shape: '6px',
+      outlined-container-shape: '6px',
+    )
+  );
+  @include mat.badge-overrides(
+    (
+      background-color: blue,
+    )
+  );
 }
 
 button.match-input-height {
@@ -20,17 +24,26 @@ button.match-input-height {
 }
 
 .snack-error {
-  @include mat.snack-bar-overrides((
-    button-color: white,
-    container-color: red,
-    supporting-text-color: white
-  ));
+  @include mat.snack-bar-overrides(
+    (
+      button-color: white,
+      container-color: red,
+      supporting-text-color: white,
+    )
+  );
 }
 
 .snack-success {
-  @include mat.snack-bar-overrides((
-    button-color: white,
-    container-color: green,
-    supporting-text-color: white
-  ));
+  @include mat.snack-bar-overrides(
+    (
+      button-color: white,
+      container-color: green,
+      supporting-text-color: white,
+    )
+  );
+}
+
+.mat-mdc-button,
+.mat-mdc-button .mdc-button__ripple {
+  border-radius: 6px !important;
 }
