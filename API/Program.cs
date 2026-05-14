@@ -27,7 +27,6 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
     return ConnectionMultiplexer.Connect(configuration);
 });
 builder.Services.AddSingleton<ICartService, CartService>();
-
 builder.Services.AddAuthorization();
 // builder.Services.AddIdentityApiEndpoints<AppUser>()
 //     .AddRoles<IdentityRole>()
@@ -38,7 +37,6 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<StoreContext>()
 .AddDefaultTokenProviders();
-
 // Configuration du cookie d'authentification
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -49,13 +47,13 @@ builder.Services.ConfigureApplicationCookie(options =>
     // Durée de validité du cookie
     options.ExpireTimeSpan = TimeSpan.FromDays(7); // (7 jours)
 
-    // // Si tu veux que le cookie soit renouvelé à chaque requête
+    // // Pour que le cookie soit renouvelé à chaque requête
     // options.SlidingExpiration = true;
 
     options.LoginPath = "/api/account/login";
     options.LogoutPath = "/api/account/logout";
 });
-
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 var app = builder.Build();
 
