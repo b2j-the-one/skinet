@@ -1,0 +1,32 @@
+<section class="bg-white py-16">
+  <div class="mx-auto max-w-2xl px-4">
+    <h2 class="font-semibold text-2xl mb-2">Merci pour votre fausse commande !</h2>
+    <p class="text-gray-500 mb-8">
+      Votre commande <span class="font-medium">#42</span>
+      ne sera jamais traitée, car il s'agit d'une fausse boutique. Nous ne vous enverrons aucune
+      notification, car votre commande n'a pas été expédiée.
+    </p>
+    <div class="space-y-2 rounded-lg border border-gray-100 bg-gray-50 p-6 mb-8">
+      <dl class="flex items-center justify-between gap-4">
+        <dt class="font-normal text-gray-500">Date</dt>
+        <dd class="font-medium text-gray-900 text-end">29 Mai 2026</dd>
+      </dl>
+      <dl class="flex items-center justify-between gap-4">
+        <dt class="font-normal text-gray-500">Mode de paiement</dt>
+        <dd class="font-medium text-gray-900 text-end">Visa</dd>
+      </dl>
+      <dl class="flex items-center justify-between gap-4">
+        <dt class="font-normal text-gray-500">Adresse</dt>
+        <dd class="font-medium text-gray-900 text-end">Adresse test</dd>
+      </dl>
+      <dl class="flex items-center justify-between gap-4">
+        <dt class="font-normal text-gray-500">Montant</dt>
+        <dd class="font-medium text-gray-900 text-end">62 euros</dd>
+      </dl>
+    </div>
+    <div class="flex items-center space-x-4">
+      <button routerLink="/orders/42" mat-flat-button>Consulter votre commande</button>
+      <button routerLink="/orders/42" mat-stroked-button>Continuer vos achats</button>
+    </div>
+  </div>
+</section>

@@ -1,16 +1,18 @@
 import { inject, Injectable } from '@angular/core';
 import {
+  ConfirmationToken,
   loadStripe,
   Stripe,
   StripeAddressElement,
   StripeAddressElementOptions,
   StripeElements,
+  StripePaymentElement,
 } from '@stripe/stripe-js';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { CartService } from './cart.service';
 import { Cart } from '../../shared/models/cart';
-import { firstValueFrom, map } from 'rxjs';
+import { firstValueFrom, tap } from 'rxjs';
 import { AccountService } from './account.service';
 
 @Injectable({
@@ -24,6 +26,7 @@ export class StripeService {
   private stripePromise: Promise<Stripe | null>;
   private elements?: StripeElements;
   private addressElement?: StripeAddressElement;
+  private paymentElement?: StripePaymentElement;
 
   constructor() {
     this.stripePromise = loadStripe(environment.stripePublicKey);
@@ -51,6 +54,18 @@ export class StripeService {
       }
     }
     return this.elements;
+  }
+
+  async createPaymentElement() {
+    if (!this.paymentElement) {
+      const elements = await this.initializeElemnts();
+      if (elements) {
+        this.paymentElement = elements.create('payment');
+      } else {
+        throw new Error("L'instance des éléments n'a pas été chargée");
+      }
+    }
+    return this.paymentElement;
   }
 
   /**
@@ -92,15 +107,59 @@ export class StripeService {
   }
 
   /**
+   * Créer le token de confirmation du paiement
+   *
+   * @returns Le token de confirmation du paiement
+   */
+  async createConfirmationToken() {
+    const stripe = await this.getStripeInstance();
+    const elements = await this.initializeElemnts();
+    const result = await elements.submit();
+    if (result.error) throw new Error(result.error.message);
+    if (stripe) {
+      return await stripe.createConfirmationToken({ elements });
+    } else {
+      throw new Error('Stripe est indisponible');
+    }
+  }
+
+  /**
+   * Confirmer le paiment
+   *
+   * @param confirmationToken Le token de confirmation
+   * @returns La confirmation de paiement
+   */
+  async confirmPayment(confirmationToken: ConfirmationToken) {
+    const stripe = await this.getStripeInstance();
+    const elements = await this.initializeElemnts();
+    const result = await elements.submit();
+    if (result.error) throw new Error(result.error.message);
+
+    const clientSecret = this.cartService.cart()?.clientSecret;
+
+    if (stripe && clientSecret) {
+      return await stripe.confirmPayment({
+        clientSecret: clientSecret,
+        confirmParams: {
+          confirmation_token: confirmationToken.id,
+        },
+        redirect: 'if_required',
+      });
+    } else {
+      throw new Error('Impossible de charger Stripe');
+    }
+  }
+
+  /**
    * Créer ou modifier un paiement
-   * @returns Une carte (observable)
+   * @returns Une carte
    */
   createOrUpdatePaymentIntent() {
     const cart = this.cartService.cart();
     if (!cart) throw new Error('Problème avec la carte');
     return this.http.post<Cart>(this.baseUrl + 'payments/' + cart.id, {}).pipe(
-      map((cart) => {
-        this.cartService.cart.set(cart);
+      tap((cart) => {
+        this.cartService.setCart(cart);
         return cart;
       }),
     );
@@ -112,5 +171,6 @@ export class StripeService {
   disposeElements() {
     this.elements = undefined;
     this.addressElement = undefined;
+    this.paymentElement = undefined;
   }
 }
