@@ -17,5 +17,5 @@ public class PaymentSummary
     /// <summary>
     /// L'année d'expiration de la carte
     /// </summary>
-    public int Year { get; set; }
+    public int ExpYear { get; set; }
 }

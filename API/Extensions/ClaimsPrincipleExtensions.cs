@@ -30,7 +30,7 @@ public static class ClaimsPrincipleExtensions
 
     public static string GetEmail(this ClaimsPrincipal user)
     {
-        var email = user.FindFirstValue(ClaimTypes.Email) ?? throw new AuthenticationException("La demande par e-mail est introuvable");
+        var email = user.FindFirstValue(ClaimTypes.Email) ?? throw new AuthenticationException("L'e-mail est introuvable");
         
         return email;
     }

@@ -30,6 +30,12 @@ public class BaseSpecification<T>(Expression<Func<T, bool>>? criteria) : ISpecif
 
     public bool IsPagingEnabled { get; private set; }
 
+    #region Spécifications pour le chargement anticipé
+    public List<Expression<Func<T, object>>> Includes { get; } = [];
+
+    public List<string> IncludeStrings { get; } = [];
+    #endregion
+
     public IQueryable<T> ApplyCriteria(IQueryable<T> query)
     {
         if (Criteria != null)
@@ -39,6 +45,18 @@ public class BaseSpecification<T>(Expression<Func<T, bool>>? criteria) : ISpecif
 
         return query;
     }
+
+    #region Spécifications pour le chargement anticipé
+    protected void AddInclude(Expression<Func<T, object>> includeExpressions)
+    {
+        Includes.Add(includeExpressions);
+    }
+
+    protected void AddInclude(string includeString)
+    {
+        IncludeStrings.Add(includeString); // For ThenInclude
+    }
+    #endregion
 
     protected void AddOrderBy(Expression<Func<T, object>> orderByExpression)
     {

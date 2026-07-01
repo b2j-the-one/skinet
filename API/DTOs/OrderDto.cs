@@ -1,11 +1,14 @@
-namespace Core.Entities.OrderAggregate;
+using Core.Entities.OrderAggregate;
 
-public class Order : BaseEntity
+namespace API.DTOs;
+
+public class OrderDto
 {
+    public int Id { get; set; }
     /// <summary>
     /// La date de la commande
     /// </summary>
-    public DateTime OrderDate { get; set; } = DateTime.UtcNow;
+    public DateTime OrderDate { get; set; }
     /// <summary>
     /// L'email de l'acheteur
     /// </summary>
@@ -13,34 +16,34 @@ public class Order : BaseEntity
     /// <summary>
     /// L'adresse de livraison
     /// </summary>
-    public ShippingAddress ShippingAddress { get; set; } = null!;
+    public required ShippingAddress ShippingAddress { get; set; }
     /// <summary>
     /// Le mode de livraison
     /// </summary>
-    public DeliveryMethod DeliveryMethod { get; set; } = null!;
+    public required string DeliveryMethod { get; set; }
+    /// <summary>
+    /// Frais de livraison
+    /// </summary>
+    public decimal ShippingPrice { get; set; }
     /// <summary>
     /// Le récapitulatif du paiement
     /// </summary>
-    public PaymentSummary PaymentSummary { get; set; } = null!;
+    public required PaymentSummary PaymentSummary { get; set; }
     /// <summary>
     /// Les articles de la commande
     /// </summary>
-    public List<OrderItem> OrderItems { get; set; } = [];
+    public required List<OrderItemDto> OrderItems { get; set; }
     /// <summary>
     /// Le sous total de la commande
     /// </summary>
     public decimal SubTotal { get; set; }
+    public decimal Total { get; set; }
     /// <summary>
     /// Le statut du paiement
     /// </summary>
-    public OrderStatus Status { get; set; } = OrderStatus.Pending;
+    public required string Status { get; set; }
     /// <summary>
     /// L'dentifiant de l'élément de paiement (Stripe)
     /// </summary>
     public required string PaymentItentId { get; set; }
-
-    public decimal GetTotal()
-    {
-        return SubTotal + DeliveryMethod.Price;
-    }
 }
