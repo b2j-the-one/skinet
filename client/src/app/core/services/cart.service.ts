@@ -75,7 +75,7 @@ export class CartService {
   removeItemFromCart(productId: number, quantity = 1) {
     const cart = this.cart();
     if (!cart) return;
-    const index = cart.items.findIndex((x) => x.productId === productId);
+    const index = cart.items.findIndex((i) => i.productId === productId);
     if (index !== -1) {
       if (cart.items[index].quantity > quantity) {
         cart.items[index].quantity -= quantity;

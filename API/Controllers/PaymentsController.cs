@@ -1,12 +1,17 @@
 using Core.Entities;
+using Core.Entities.OrderAggregate;
 using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace API.Controllers;
 
-public class PaymentsController(IPaymentService paymentService, IUnitOfWork unit) : BaseApiController
+public class PaymentsController(IPaymentService paymentService, IUnitOfWork unit, ILogger<PaymentsController> logger, IConfiguration config) : BaseApiController
 {
+    private readonly string _whSecret = config["StripeSettings:WhSecret"]!;
+
     [Authorize]
     [HttpPost("{cartId}")]
     public async Task<ActionResult<ShoppingCart>> CreateOrUpdatePaymentIntent(string cartId)
@@ -22,5 +27,67 @@ public class PaymentsController(IPaymentService paymentService, IUnitOfWork unit
     public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
     {
         return Ok(await unit.Repository<DeliveryMethod>().ListAllAsync());
+    }
+
+    [HttpPost("webhook")]
+    public async Task<IActionResult> StripeWebhook()
+    {
+        var json = await new StreamReader(Request.Body).ReadToEndAsync();
+
+        try
+        {
+            var stripeEvent = ConstructStripeEvent(json);
+
+            if (stripeEvent.Data.Object is not PaymentIntent intent)
+            {
+                return BadRequest("Données d'événement non valides");
+            }
+
+            await HandlePaymentIntentSucceeded(intent);
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+          logger.LogError(ex, "Erreur du webhook Stripe");
+          return StatusCode(StatusCodes.Status500InternalServerError, "Erreur du webhook");
+        }
+    }
+
+    private async Task HandlePaymentIntentSucceeded(PaymentIntent intent)
+    {
+        if (intent.Status == "Succeeded")
+        {
+            var spec = new OrderSpecification(intent.Id, true);
+
+            var order = await unit.Repository<Order>().GetEntityWithSpec(spec) ?? throw new Exception("Commande introuvable");
+
+            if ((long)order.GetTotal() * 100 != intent.Amount)
+            {
+                order.Status = OrderStatus.PaymentMismatch;
+            }
+            else
+            {
+                order.Status = OrderStatus.PaymentReceveid;
+            }
+
+            await unit.Complete();
+
+            // TODO SingalR
+        }
+    }
+
+    private Event ConstructStripeEvent(string json)
+    {
+        try
+        {
+            return EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"], _whSecret);
+        }
+        catch (Exception ex)
+        {
+            
+            logger.LogError(ex, "Échec de la création d'un événement Stripe");
+            throw new StripeException("Signature invalide");
+        }
     }
 }

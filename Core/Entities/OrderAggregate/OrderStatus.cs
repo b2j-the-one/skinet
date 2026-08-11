@@ -7,5 +7,7 @@ public enum OrderStatus
     /// <summary>Paiement reçu</summary>
     PaymentReceveid,
     /// <summary>Paiement échoué</summary>
-    PaymentFailed
+    PaymentFailed,
+    /// <summary>Paiement différé</summary>
+    PaymentMismatch
 }
