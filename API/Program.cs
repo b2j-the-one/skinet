@@ -1,4 +1,5 @@
 using API.Middleware;
+using API.SignalR;
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
@@ -55,6 +56,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LogoutPath = "/api/account/logout";
 });
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddSignalR();
 // builder.Services.AddScoped<IJwtService, JwtService>();
 // builder.Services.AddSingleton<ICacheService, RedisCacheService>();
 // builder.Services.AddScoped<IEmailService, SmtpEmailService>();
@@ -218,6 +220,8 @@ app.MapControllers();
 // * alors qu'on utilise maintenant Identity classique + cookies + AccountController
 // **/
 // app.MapGroup("api").MapIdentityApi<AppUser>(); // api/login
+
+app.MapHub<NotificationHub>("/hub/notifications");
 
 try
 {
