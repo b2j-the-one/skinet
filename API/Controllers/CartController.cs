@@ -11,7 +11,7 @@ public class CartController(ICartService cartService) : BaseApiController
     {
         var cart = await cartService.GetCartAsync(id);
 
-        return Ok(cart ?? new ShoppingCart{Id = id});
+        return Ok(cart ?? new ShoppingCart {Id = id});
     }
 
     [HttpPost]
@@ -25,6 +25,23 @@ public class CartController(ICartService cartService) : BaseApiController
     }
 
     [HttpDelete]
+    //[HttpDelete("{id}")] // Ne jamais utiliser string comme contrainte
+    //[HttpGet("{id:int}")] // Paramètre doit être un entier.
+    //[HttpGet("{name:alpha}")] // Paramètre doit contenir uniquement des lettres (A–Z, a–z)
+    //[HttpGet("{flag:bool}")] // Paramètre doit être true ou false
+    //[HttpGet("{id:long}")]  // Paramètre doit être un entier 64 bits
+    //[HttpGet("{id:guid}")] // Paramètre doit être un GUID valide
+    //[HttpGet("{date:datetime}")] // Paramètre doit être une date valide
+    //[HttpGet("{price:decimal}")] // Paramètre doit être un nombre décimal
+    //[HttpGet("{value:double}")]
+    //[HttpGet("{value:float}")]
+    //[HttpGet("{age:min(18)}")] // Contraintes numériques
+    //[HttpGet("{age:max(65)}")]
+    //[HttpGet("{age:range(18,65)}")]
+    //[HttpGet("{code:length(5)}")] // Contraintes sur la longueur de chaîne
+    //[HttpGet("{code:minlength(3)}")]
+    //[HttpGet("{code:maxlength(10)}")]
+    //[HttpGet("{name:regex(^[a-zA-Z]+$)}")] // Contrôle total via expression régulière
     public async Task<ActionResult> DeleteCart(string id)
     {
         var result = await cartService.DeleteCartAsync(id);

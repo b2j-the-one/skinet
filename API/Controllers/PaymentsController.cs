@@ -63,7 +63,7 @@ public class PaymentsController(
 
     private async Task HandlePaymentIntentSucceeded(PaymentIntent intent)
     {
-        if (intent.Status == "Succeeded")
+        if (intent.Status == "succeeded")
         {
             var spec = new OrderSpecification(intent.Id, true);
 

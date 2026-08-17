@@ -164,6 +164,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           const order = await this.createOrderModel();
           const orderResult = await firstValueFrom(this.orderService.createOrder(order));
           if (orderResult) {
+            this.orderService.orderComplete = true;
             this.cartService.deleteCart();
             this.cartService.selectedDelivery.set(null);
             this.router.navigateByUrl('/checkout/success');
@@ -174,14 +175,6 @@ export class CheckoutComponent implements OnInit, OnDestroy {
           throw new Error(result.error.message);
         } else {
           throw new Error("Une erreur s'est produite");
-        }
-
-        if (result.error) {
-          throw new Error(result.error.message);
-        } else {
-          this.cartService.deleteCart();
-          this.cartService.selectedDelivery.set(null);
-          this.router.navigateByUrl('/checkout/success');
         }
       }
     } catch (error: any) {
