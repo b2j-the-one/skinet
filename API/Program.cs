@@ -214,6 +214,11 @@ app.UseCors(policy => policy
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Permet de rediriger automatiquement une requête vers un fichier par défaut (par exemple index.html) sans que le nom du fichier soit indiqué dans l’URL.
+app.UseDefaultFiles();
+// Permet de servir les fichiers statiques (HTML, CSS, JS, images…)
+app.UseStaticFiles();
+
 app.MapControllers();
 // /**
 // * MapIdentityApi<AppUser>() appartient au mode Identity API Endpoints (JWT, REST),
@@ -222,6 +227,11 @@ app.MapControllers();
 // app.MapGroup("api").MapIdentityApi<AppUser>(); // api/login
 
 app.MapHub<NotificationHub>("/hub/notifications");
+/**
+ * Permet de gérer les cas où le chemin d’URL de la requête ne contient pas de nom de fichier. Elle permet le routage des demandes de contenu dynamique vers une 
+ * infrastructure SPA, tout en générant un HTTP 404 pour les demandes de fichiers inexistants.
+ **/
+app.MapFallbackToController("Index", "Fallback");
 
 try
 {
