@@ -3,14 +3,15 @@ import { inject, Injectable } from '@angular/core';
 import { Pagination } from '../../shared/models/pagination';
 import { Product } from '../../shared/models/product';
 import { ShopParams } from '../../shared/models/shopParams';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ShopService {
   private http = inject(HttpClient);
 
-  baseUrl = 'https://localhost:5001/api/';
+  baseUrl = environment.apiUrl;
   types: string[] = [];
   brands: string[] = [];
 
@@ -47,14 +48,14 @@ export class ShopService {
   getBrands() {
     if (this.brands.length > 0) return;
     return this.http.get<string[]>(this.baseUrl + 'products/brands').subscribe({
-      next: response => this.brands = response
+      next: (response) => (this.brands = response),
     });
   }
 
   getTypes() {
     if (this.types.length > 0) return;
     return this.http.get<string[]>(this.baseUrl + 'products/types').subscribe({
-      next: response => this.types = response
+      next: (response) => (this.types = response),
     });
   }
 }
